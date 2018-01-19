@@ -184,7 +184,7 @@ public class Writer {
      * @param distancematrix_d
      */
     public void addDistanceMatrixToResult(double[][] distancematrix_d){
-        printmatrix(distancematrix_d, "DistanceMethods matrix (gamma corrected)" +
+        printmatrix(distancematrix_d, "DistanceMethods matrix" +
                 "-----------------------------------------\n");
     }
 

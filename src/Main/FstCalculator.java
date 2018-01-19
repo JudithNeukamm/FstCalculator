@@ -20,6 +20,7 @@ public class FstCalculator {
     private final HashMap<String, List<String>> data;
     private String distance_method = "Pairwise Difference";
     private Writer writer;
+    private String[] groupnames;
 
 
     public FstCalculator(HashMap<String, List<String>> data,
@@ -62,7 +63,11 @@ public class FstCalculator {
         standardAMOVA.setData(data);
 
         double[][] fsts_amova = standardAMOVA.calculateFst();
-        double[][] pvalues = standardAMOVA.calculatePermutatedFst();
+        double[][] pvalues = null;
+        if(number_of_permutations > 0){
+            pvalues = standardAMOVA.calculatePermutatedFst();
+        }
+
 
 
         writer = new Writer(number_of_permutations);
@@ -90,6 +95,8 @@ public class FstCalculator {
 
         writer.writeResultsToFile("resultsFstStatisticsAMOVA.tsv");
 
+        groupnames = standardAMOVA.getGroupnames();
+
         return fsts_amova;
 
     }
@@ -99,5 +106,7 @@ public class FstCalculator {
         return writer.getResult_as_string();
     }
 
-
+    public String[] getGroupnames() {
+        return groupnames;
+    }
 }

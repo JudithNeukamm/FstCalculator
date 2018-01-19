@@ -5,6 +5,7 @@ import methods.Permutation;
 import methods.UsefulFunctions;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -47,6 +48,8 @@ public class FstAMOVA {
         fsts = new double[populations.size()][populations.size()];
 
         // iterate over list, calculateWP distance between each pair of individuals
+        BigInteger totalNumberOfComparisons = choose(populations.size(), 2);
+        int pairsDone = 0;
         for(int i = 0; i < populations.size(); i++){
             for(int j = i+1; j < populations.size(); j++){
                 List<String> pop1 = data.get(populations.get(j));
@@ -56,6 +59,8 @@ public class FstAMOVA {
                         pop2.toArray(new String[pop2.size()])
                 );
                 fsts[i][j] = fst;
+                pairsDone++;
+                System.out.println("("+ pairsDone+"/"+totalNumberOfComparisons+") pairs compared");
             }
         }
         return fsts;
@@ -269,6 +274,21 @@ public class FstAMOVA {
     }
 
 
+    public static BigInteger choose(int x, int y) {
+        if (y < 0 || y > x)
+            return BigInteger.ZERO;
+        if (y == 0 || y == x)
+            return BigInteger.ONE;
+
+        BigInteger answer = BigInteger.ONE;
+        for (int i = x - y + 1; i <= x; i++) {
+            answer = answer.multiply(BigInteger.valueOf(i));
+        }
+        for (int j = 1; j <= y; j++) {
+            answer = answer.divide(BigInteger.valueOf(j));
+        }
+        return answer;
+    }
 
     /*
             Setter and Getter
