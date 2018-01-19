@@ -1,3 +1,5 @@
+package Main;
+
 import IO.reader.DistanceTypeParser;
 import IO.writer.Writer;
 import fst.FstAMOVA;
@@ -28,7 +30,7 @@ public class FstCalculator {
                          double gamma,
                          double significance
 
-                         ) {
+    ) {
 
         this.data = data;
         this.missing_data = missing_data;
