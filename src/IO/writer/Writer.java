@@ -218,4 +218,8 @@ public class Writer {
         printmatrix(fsts_lin, title);
     }
 
+
+    public String getResult_as_string() {
+        return result_as_string;
+    }
 }

@@ -17,6 +17,7 @@ public class FstCalculator {
     private static String missing_data = "N";
     private final HashMap<String, List<String>> data;
     private String distance_method = "Pairwise Difference";
+    private Writer writer;
 
 
     public FstCalculator(HashMap<String, List<String>> data,
@@ -24,7 +25,8 @@ public class FstCalculator {
                          double level_missing_data,
                          String distance_method,
                          int number_of_permutations,
-                         double gamma
+                         double gamma,
+                         double significance
 
                          ) {
 
@@ -34,6 +36,7 @@ public class FstCalculator {
         this.level_missing_data = level_missing_data;
         this.number_of_permutations = number_of_permutations;
         this.gamma = gamma;
+        this.significance = significance;
     }
 
     public double[][] runCaclulations() throws IOException {
@@ -60,7 +63,7 @@ public class FstCalculator {
         double[][] pvalues = standardAMOVA.calculatePermutatedFst();
 
 
-        Writer writer = new Writer(number_of_permutations);
+        writer = new Writer(number_of_permutations);
 
         writer.writeResultsFstToString(
                 fsts_amova,
@@ -89,6 +92,10 @@ public class FstCalculator {
 
     }
 
+
+    public String getResultString(){
+        return writer.getResult_as_string();
+    }
 
 
 }
