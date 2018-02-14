@@ -2,7 +2,7 @@ package Main;
 
 import IO.reader.DistanceTypeParser;
 import IO.writer.Writer;
-import fst.FstAMOVA;
+import fst.FstPhiArlequin;
 import fst.Linearization;
 import methods.Filter;
 
@@ -21,6 +21,11 @@ public class FstCalculator {
     private String distance_method = "Pairwise Difference";
     private Writer writer;
     private String[] groupnames;
+    private double[][] fsts_amova;
+    private double[][] pvalues;
+    private FstPhiArlequin fstPhiArlequin;
+    private List<Integer> usableLoci;
+    private Linearization linearization;
 
 
     public FstCalculator(HashMap<String, List<String>> data,
@@ -43,31 +48,34 @@ public class FstCalculator {
     }
 
     public double[][] runCaclulations() throws IOException {
-        return runAmova();
-    }
-
-    private double[][] runAmova() throws IOException {
-
-        Linearization linearization = new Linearization();
+        linearization = new Linearization();
 
         DistanceTypeParser distanceTypeParser = new DistanceTypeParser();
         Filter filter = new Filter();
-        List<Integer> usableLoci = filter.getUsableLoci(data, missing_data, level_missing_data);
+        usableLoci = filter.getUsableLoci(data, missing_data, level_missing_data);
 
-        FstAMOVA standardAMOVA = new FstAMOVA(
+        fstPhiArlequin = new FstPhiArlequin(
                 usableLoci,
                 number_of_permutations,
                 distanceTypeParser.parse(distance_method),
                 gamma);
 
-        standardAMOVA.setData(data);
+        fstPhiArlequin.setData(data);
 
-        double[][] fsts_amova = standardAMOVA.calculateFst();
-        double[][] pvalues = null;
+        fsts_amova = fstPhiArlequin.calculateFst();
+        pvalues = null;
         if(number_of_permutations > 0){
-            pvalues = standardAMOVA.calculatePermutatedFst();
+            pvalues = fstPhiArlequin.calculatePermutatedFst();
         }
 
+        groupnames = fstPhiArlequin.getGroupnames();
+
+        return fsts_amova;
+
+    }
+
+
+    public void writeResultToFile(String filepath) throws IOException {
 
 
         writer = new Writer(number_of_permutations);
@@ -75,13 +83,13 @@ public class FstCalculator {
         writer.writeResultsFstToString(
                 fsts_amova,
                 pvalues,
-                standardAMOVA.getGroupnames(),
+                groupnames,
                 usableLoci,
                 level_missing_data,
                 significance
         );
         writer.addDistanceMatrixToResult(
-                standardAMOVA.getDistanceCalculator().getDistancematrix_d()
+                fstPhiArlequin.getDistanceCalculator().getDistancematrix_d()
         );
 
         writer.addLinerarizedFstMatrix(
@@ -93,14 +101,10 @@ public class FstCalculator {
                 "# Linearized Fst values (Reynold)."
         );
 
-        writer.writeResultsToFile("resultsFstStatisticsAMOVA.tsv");
+        writer.writeResultsToFile(filepath + "/resultsFstStatisticsAMOVA.tsv");
 
-        groupnames = standardAMOVA.getGroupnames();
-
-        return fsts_amova;
 
     }
-
 
     public String getResultString(){
         return writer.getResult_as_string();

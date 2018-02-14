@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by neukamm on 6/19/17.
  */
-public class FstAMOVA {
+public class FstPhiArlequin {
 
     private int numberOfPermutations;
     private final UsefulFunctions functions;
@@ -23,7 +23,7 @@ public class FstAMOVA {
     private int numberOfPopulations;
     private double[][] fsts;
 
-    public FstAMOVA(List<Integer> usableLoci, int numberOfPermutations, int method, double gamma){
+    public FstPhiArlequin(List<Integer> usableLoci, int numberOfPermutations, int method, double gamma){
         functions = new UsefulFunctions();
         this.numberOfPermutations = numberOfPermutations;
         distanceCalculator = new DistanceMatrix(functions.count1(usableLoci), gamma, method, usableLoci);
